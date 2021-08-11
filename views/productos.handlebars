@@ -1,0 +1,38 @@
+<h2>Ingrese Producto</h2>
+    
+<form id="form">
+    Nombre: <input type="text" id="title" name="title">
+    Precio: <input type="text" id="price" name="price">
+    Foto: <input type="text" id="thumbnail" name="thumbnail">
+    <button class="btn btn-primary">Enviar</button>
+</form>
+
+<h2>PRODUCTOS</h2>
+<table class="table">
+    <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Foto</th>
+        <th>Stock</th>
+    </thead>
+    <tbody id="tbody">
+        {{#each productos}}
+            <tr id="{{{this.id}}}">
+                <td>{{this.id}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.desc}}</td>
+                <td>${{this.price}}</td>
+                <td><image src="{{this.thumbnail}}"></image></td>
+                <td>{{this.stock}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+
+
+
+
+

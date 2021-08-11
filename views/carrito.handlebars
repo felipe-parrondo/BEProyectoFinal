@@ -1,0 +1,19 @@
+<h2>CARRITO</h2>
+<table class="table">
+    <thead>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Foto</th>
+    </thead>
+    <tbody id="tbody">
+        {{#each productos}}
+            <tr id="{{{this.id}}}">
+                <td>{{this.id}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.price}}</td>
+                <td><image src="{{this.thumbnail}}"></image></td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

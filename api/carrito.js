@@ -55,3 +55,8 @@ class Carrito{
         return elementoBorrado;
     }
 };
+
+module.exports = {
+    laClase : Carrito,
+    laLista : carrito
+}

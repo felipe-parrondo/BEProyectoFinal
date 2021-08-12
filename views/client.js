@@ -50,3 +50,7 @@ form.addEventListener('submit', function(e) {
     p.value = ""
     th.value = ""
 });
+
+setInterval(function(){ 
+    socket.emit("BlingBling");
+}, 500);

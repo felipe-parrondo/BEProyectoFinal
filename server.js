@@ -3,15 +3,30 @@
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
-const io = require("socket.io") (http);
 const routerProductos = express.Router();
+const routerCarrito = express.Router();
 const bodyParser = require("body-parser");
+const fs = require("fs");
+
+    //SOCKET.IO
+const io = require("socket.io") (http);
+
+    //HBS
 const handlebars = require("express-handlebars");
+
+    //PRODUCTOS
 const myApi = require("./api/api.js");
 const productos = myApi.laLista;
 const Productos = myApi.laClase;
-const objAuth = require("./api/auth.js");
-const Auth = objAuth.Auth;
+
+    //AUTH
+const authApi = require("./api/auth.js");
+const Auth = authApi.Auth;
+
+    //CARRITO
+const carritoApi = require("./api/carrito")
+const Carrito = carritoApi.laClase;
+const carrito = carritoApi.laLista;
 
 
 //CUSTOM M-WARES --- SIMULACIÓN DE AUTH
@@ -41,6 +56,7 @@ app.use(express.static("./views"));
 
 //ENDPOINTS
 
+    //PRODUCTOS
 routerProductos.get("/", (req, res) =>{
     res.send(Productos.leer());
 });
@@ -70,27 +86,45 @@ routerProductos.delete("/:id", (req, res) => {
     res.send(Productos.delete(req.params.id));
 });
 
+    //CARRITO
+routerCarrito.get("/", (req, res) =>{
+    res.send(Carrito.leer());
+});
+
+routerCarrito.get("/:id", (req, res) => {
+    let tempId = req.params.id;
+    res.send(Carrito.leerId(tempId));
+});
+
+routerCarrito.post("/id", (req, res) => {
+    let prodIndex = productos.findIndex(e => {
+        e.id = req.params.id
+    });
+    let prod = productos[prodIndex]
+    Carrito.guardar(prod);
+    res.redirect("/carrito/vista");
+});
+
+routerCarrito.delete("/:id", (req, res) => {
+    res.send(Carrito.delete(req.params.id));
+});
+
 
 //VISUALIZACIÓN DEL FRONT
 
 app.get("/productos/vista", (req, res) => {   //PENDIENTE: IMPLEMENTAR ESTE ENDPOINT EN "/"
-    let verif;
-    if(productos){
-        verif = true;
-    } else{
-        verif = false;
-    }
-    res.render("productos", {productos: productos, verif: verif});
+    res.render("productos", {productos: productos});
 })
 
 app.get("/carrito/vista", (req, res) => {
-    res.render("carrito")
+    res.render("carrito", {productos: carrito})
 })
 
 
 //ROUTER
 
 app.use("/productos", routerProductos);
+app.use("/carrito", routerCarrito)
 
 
 //PUERTO
@@ -113,5 +147,12 @@ io.on("connection", (socket) => {
             console.log(e);
         }
     });
+
+    socket.on("BlingBling", () => {
+        let stringCarrito = JSON.stringify(carrito)
+        let stringProductos = JSON.stringify(productos)
+        fs.writeFileSync("./carrito.txt", stringCarrito);
+        fs.writeFileSync("./productos.txt", stringProductos);
+    })
 });
 
